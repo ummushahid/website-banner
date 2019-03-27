@@ -1,3 +1,15 @@
+<?php
+
+session_start();
+
+if (! isset($_SESSION['size']))
+{
+  header('location: design_step1.php');
+  return;
+}
+
+?>
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -170,7 +182,7 @@ a:active {
         </tr>
       </table>
     </h3>
-    <form id="Step 3" name="Step 3" method="post" action="">
+    <form id="Order Confirmation" name="Order Confirmation" method="post" action="">
       <div align="center">
         <table width="90%" border="0">
           <tr align="right">
@@ -178,7 +190,13 @@ a:active {
           </tr>
           <tr align="right">
             <td scope="col">Banner Size :</td>
-            <td align="left" scope="col">&nbsp;</td>
+            <td align="left" scope="col"><?php
+              foreach($_SESSION['size'] as $size) :
+                ?>
+              <?= $size ?>,
+				<?php
+              endforeach;
+              ?></td>
           </tr>
           <tr align="right">
             <td scope="col">Banner Code :</td>
@@ -244,9 +262,10 @@ a:active {
           </tr>
         </table>
         <p>&nbsp;</p>
+        <p><a href="design_success.php"><img src="Imej/All Button/EditDetails.png" alt="EditDetails" width="282" height="80" class="button" /><img src="Imej/All Button/Submit.png" alt="SubmitDesign" width="282" height="80" class="button" /></a></p>
       </div>
     </form>
-    <p><a href="design_success.php"><img src="Imej/All Button/EditDetails.png" alt="EditDetails" width="282" height="80" class="button" /><img src="Imej/All Button/Submit.png" alt="SubmitDesign" width="282" height="80" class="button" /></a></p>
+    <p>&nbsp;</p>
   </div>
   
   <script>

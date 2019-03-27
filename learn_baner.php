@@ -182,9 +182,7 @@ function myFunction() {
 }
 </script>
 
-  <div class="footer">
-    <p>*  <!-- end .footer -->footer</p>
-  </div>
+  <div class="footer"></div>
   <!-- end .container --></div>
 </body>
 </html>

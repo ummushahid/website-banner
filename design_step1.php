@@ -1,7 +1,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
+
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<script src="https://cdn.jsdelivr.net/npm/vue"></script>
 <title>Baner</title>
 <style type="text/css">
 <!--
@@ -138,13 +140,14 @@ a:active {
 }
 
 -->
-</style></head>
+</style>
+</head>
 
 <body>
 
-<div class="container">
+<div class="container" id="app">
+<form id="form1" name="form1" method="post" action="processes/design_step1.php" @submit="submit">
   <div class="header" id="myHeader">
-    <form id="form1" name="form1" method="post" action="">
       <div align="left">
         <table width="100%" border="0">
           <tr>
@@ -159,7 +162,7 @@ a:active {
         </table>
       </div>
   
-  </form></div>
+  </div>
   <div class="content">
     <h2><font face="Georgia" size="+6" color="#FFFFFF">Step 1</font></h2>
     <h3>
@@ -172,25 +175,24 @@ a:active {
         </tr>
       </table>
     </h3>
-    <form action="design_step2.php" method="post" onsubmit="return checkCheckBoxes(this);">
       <table width="90%" border="0" align="center">
         <tr valign="top">
           <th width="33%" scope="col"><p><img src="Imej/All Button/Size1.png" alt="Size_Small" width="366" height="300" class="button" />
               </p>
             <p>
-              <input type="checkbox" name="CHECKBOX_1" value="Small" />
+              <input type="checkbox" v-model="checkbox" name="checkbox[]" value="Small (2x4)" />
             Size 1: Small</p>
             <p>&nbsp;</p></th>
           <th width="34%" scope="col"><p><img src="Imej/All Button/Size2.png" alt="Size_Medium" width="366" height="300" class="button" />
               </p>
             <p>
-              <input type="checkbox" name="CHECKBOX_2" value="Medium" />
+              <input type="checkbox" v-model="checkbox" name="checkbox[]" value="Medium (3x6)" />
             Size 2: Medium</p>
             <p>&nbsp;</p></th>
           <th width="33%" scope="col"><p><img src="Imej/All Button/Size3.png" alt="Size_Large" width="366" height="300" class="button" />
               </p>
             <p>
-              <input type="checkbox" name="CHECKBOX_3" value="Large" />
+              <input type="checkbox" v-model="checkbox" name="checkbox[]" value="Large (5x10)" />
             Size 3: Large</p>
             <p>&nbsp;</p></th>
         </tr>
@@ -198,9 +200,9 @@ a:active {
       <p>
         <input type="image" class="button" value="Submit!" src="Imej/All Button/NextS2 - Copy.png" align="middle" width="221" height="60" />
       </p>
-    </form>
     <p>&nbsp;</p>
   </div>
+    </form>
   
   <script>
 window.onscroll = function() {myFunction()};
@@ -218,20 +220,24 @@ function myFunction() {
 </script>
 
 <script type="text/javascript" language="JavaScript">
-<!--
-function checkCheckBoxes(theForm) {
-	if (
-	theForm.CHECKBOX_1.checked == false &&
-	theForm.CHECKBOX_2.checked == false &&
-	theForm.CHECKBOX_3.checked == false) 
-	{
-		alert ('Select banner size to proceed');
-		return false;
-	} else { 	
-		return true;
-	}
-}
-//-->
+
+new Vue({
+  el: '#app',
+  data: {
+    checkbox: []
+  },
+  methods: {
+    submit(e)
+    {
+      if (this.checkbox.length == 0)
+      {
+        e.preventDefault();
+        alert('Please select banner SIZE before proceed.');
+      }
+
+    }
+  }
+})
 </script> 
 
   <div class="footer">

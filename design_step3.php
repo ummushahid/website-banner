@@ -1,3 +1,71 @@
+<?php require_once('Connections/connection_baner.php'); ?>
+<?php
+if (!function_exists("GetSQLValueString")) {
+function GetSQLValueString($theValue, $theType, $theDefinedValue = "", $theNotDefinedValue = "") 
+{
+  if (PHP_VERSION < 6) {
+    $theValue = get_magic_quotes_gpc() ? stripslashes($theValue) : $theValue;
+  }
+
+  $theValue = function_exists("mysql_real_escape_string") ? mysql_real_escape_string($theValue) : mysql_escape_string($theValue);
+
+  switch ($theType) {
+    case "text":
+      $theValue = ($theValue != "") ? "'" . $theValue . "'" : "NULL";
+      break;    
+    case "long":
+    case "int":
+      $theValue = ($theValue != "") ? intval($theValue) : "NULL";
+      break;
+    case "double":
+      $theValue = ($theValue != "") ? doubleval($theValue) : "NULL";
+      break;
+    case "date":
+      $theValue = ($theValue != "") ? "'" . $theValue . "'" : "NULL";
+      break;
+    case "defined":
+      $theValue = ($theValue != "") ? $theDefinedValue : $theNotDefinedValue;
+      break;
+  }
+  return $theValue;
+}
+}
+
+$editFormAction = $_SERVER['PHP_SELF'];
+if (isset($_SERVER['QUERY_STRING'])) {
+  $editFormAction .= "?" . htmlentities($_SERVER['QUERY_STRING']);
+}
+
+if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "form2")) {
+  $insertSQL = sprintf("INSERT INTO baner_details (title, `date`, `time`, venue, contact_no, notes) VALUES (%s, %s, %s, %s, %s, %s)",
+                       GetSQLValueString($_POST['title'], "text"),
+                       GetSQLValueString($_POST['date'], "text"),
+                       GetSQLValueString($_POST['time'], "text"),
+                       GetSQLValueString($_POST['venue'], "text"),
+                       GetSQLValueString($_POST['contact_no'], "text"),
+                       GetSQLValueString($_POST['notes'], "text"));
+
+  mysql_select_db($database_connection_baner, $connection_baner);
+  $Result1 = mysql_query($insertSQL, $connection_baner) or die(mysql_error());
+
+  $insertGoTo = "design_step4.php";
+  if (isset($_SERVER['QUERY_STRING'])) {
+    $insertGoTo .= (strpos($insertGoTo, '?')) ? "&" : "?";
+    $insertGoTo .= $_SERVER['QUERY_STRING'];
+  }
+  header(sprintf("Location: %s", $insertGoTo));
+}
+
+session_start();
+
+if (! isset($_SESSION['size']))
+{
+  header('location: design_step1.php');
+  return;
+}
+
+?>
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -124,6 +192,25 @@ a:hover, a:active, a:focus {
 	font-size: 5px;
 	line-height: 0px;
 }
+
+input[type=text] 
+{
+  width: 90%;
+  padding: 10px 20px;
+  margin: 8px 0;
+  box-sizing: border-box;
+  border: 2px solid #ccc;
+  -webkit-transition: 0.1s;
+  transition: 0.1s;
+  outline: none;
+  background-color: white;  
+}
+
+input[type=text]:focus 
+{
+  border: 2px solid #555;
+}
+
 body,td,th {
 	font-family: Montserrat;
 }
@@ -138,7 +225,8 @@ a:active {
 }
 
 -->
-</style></head>
+</style>
+</head>
 
 <body>
 
@@ -172,54 +260,69 @@ a:active {
         </tr>
       </table>
     </h3>
-    <form id="Step 3" name="Step 3" method="post" action="">
-      <div align="center">
-        <table width="90%" border="0">
-          <tr align="right">
-            <td scope="col">Banner Size :</td>
-            <td align="left" scope="col">&nbsp;</td>
-          </tr>
-          <tr align="right">
-            <td scope="col">Banner Code :</td>
-            <td align="left" scope="col">&nbsp;</td>
-          </tr>
-          <tr align="right">
-            <td scope="col">Quantity :</td>
-            <td align="left" scope="col">&nbsp;</td>
-          </tr>
-          <tr align="right">
-            <td scope="col">Title :</td>
-            <td align="left" scope="col">&nbsp;</td>
-          </tr>
-          <tr align="right">
-            <td width="21%" scope="col">Date :</td>
-            <td width="79%" align="left" scope="col">&nbsp;</td>
-          </tr>
-          <tr align="right">
-            <td scope="col">Time :</td>
-            <td align="left" scope="col">&nbsp;</td>
-          </tr>
-          <tr align="right">
-            <td scope="col">Venue :</td>
-            <td align="left" scope="col">&nbsp;</td>
-          </tr>
-          <tr align="right">
-            <td scope="col">Contact No :</td>
-            <td align="left" scope="col">&nbsp;</td>
-          </tr>
-          <tr align="right">
-            <td scope="col">Notes :</td>
-            <td align="left" scope="col">&nbsp;</td>
-          </tr>
-          <tr align="right">
-            <td scope="col">&nbsp;</td>
-            <td align="left" scope="col">&nbsp;</td>
-          </tr>
-        </table>
-        <p>&nbsp;</p>
-      </div>
+    <p>&nbsp; </p>
+    <form action="processes/storeStep3InDatabase.php" method="post" name="Step 3" id="Step 3">
+      <table width="90%" align="center">
+        <tr valign="baseline">
+          <td align="right" nowrap="nowrap">Banner Size:</td>
+          <td><?php
+              foreach($_SESSION['size'] as $size) :
+                ?>
+            <?= $size ?>
+            ,
+          <?php
+              endforeach;
+              ?></td>
+        </tr>
+        <tr valign="baseline">
+          <td align="right" nowrap="nowrap">Banner Code:</td>
+          <td><?php
+              foreach($_SESSION['template'] as $template) :
+                ?>
+            <?= $template ?>
+            ,
+          <?php
+              endforeach;
+              ?></td>
+        </tr>
+        <tr valign="middle">
+          <td align="right" nowrap="nowrap">Quantity:</td>
+          <td><label for="textfield"></label>
+          <input type="text" name="quantity" id="textfield" /></td>
+        </tr>
+        <tr valign="middle">
+          <td width="22%" align="right" nowrap="nowrap">Title:</td>
+          <td width="78%"><input type="text" name="title" value="" size="32" /></td>
+        </tr>
+        <tr valign="middle">
+          <td align="right" nowrap="nowrap">Date:</td>
+          <td><input type="text" name="date" value="" size="32" /></td>
+        </tr>
+        <tr valign="middle">
+          <td align="right" nowrap="nowrap">Time:</td>
+          <td><input type="text" name="time" value="" size="32" /></td>
+        </tr>
+        <tr valign="middle">
+          <td align="right" nowrap="nowrap">Venue:</td>
+          <td><input type="text" name="venue" value="" size="32" /></td>
+        </tr>
+        <tr valign="middle">
+          <td align="right" nowrap="nowrap">Contact No:</td>
+          <td><input type="text" name="contact_no" value="" size="32" /></td>
+        </tr>
+        <tr valign="middle">
+          <td nowrap="nowrap" align="right">Notes:</td>
+          <td><textarea name="notes" cols="100" rows="5"></textarea></td>
+        </tr>
+      </table>
+      <p>&nbsp;</p>
+      <p>
+        <input name="Step4" type="image" class="button" id="Step4" value="Next for Step 4!" src="Imej/All Button/NextS4.png" alt="Step 4" width="221" height="60"/>
+      </p>
+      <p>
+        <input type="hidden" name="MM_insert" value="form2" />
+      </p>
     </form>
-    <p><a href="design_step4.php"><img src="Imej/All Button/NextS4.png" alt="Step4" width="221" height="60" class="button" /></a></p>
   </div>
   
   <script>
@@ -237,9 +340,7 @@ function myFunction() {
 }
 </script>
 
-  <div class="footer">
-    <p>*  <!-- end .footer -->footer</p>
-  </div>
+  <div class="footer"></div>
   <!-- end .container --></div>
 </body>
 </html>

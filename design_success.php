@@ -1,3 +1,15 @@
+<?php
+
+session_start();
+
+if (! isset($_SESSION['size']))
+{
+  header('location: design_step1.php');
+  return;
+}
+
+?>
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -178,7 +190,7 @@ a:active {
           <th height="10" align="center" scope="row">&nbsp;</th>
         </tr>
         <tr>
-          <th height="10" align="center" scope="row"><span class="container">Your Order ID is: B00378</span></th>
+          <th height="10" align="center" scope="row"><span class="container">Your Order ID is:</span></th>
         </tr>
         <tr>
           <th height="10" align="center" scope="row"><span class="container">We will contact you about your order very soon.</span></th>
@@ -186,14 +198,21 @@ a:active {
       </table>
     </h3>
     <form id="Step 3" name="Step 3" method="post" action="">
-      <div align="center">
+      <div align="center" class="button">
         <table width="90%" border="0">
           <tr align="right">
             <td height="55" colspan="2" align="center" class="content1" scope="col">Banner Details</td>
           </tr>
           <tr align="right">
             <td scope="col">Banner Size :</td>
-            <td align="left" scope="col">&nbsp;</td>
+            <td align="left" scope="col"><?php
+              foreach($_SESSION['size'] as $size) :
+                ?>
+              <?= $size ?>
+              ,
+            <?php
+              endforeach;
+              ?></td>
           </tr>
           <tr align="right">
             <td scope="col">Banner Code :</td>
@@ -259,10 +278,11 @@ a:active {
           </tr>
         </table>
         <p>&nbsp;</p>
-        <p><img src="Imej/All Button/PrintOrder.png" alt="PrintOrder" width="355" height="100" class="button" /></p>
-      </div>
+        <p><img src="Imej/All Button/PrintOrder.png" alt="PrintOrder" width="355" height="100" class="button"/></p>
+        <button onclick="myFunction()">Print From
+        </button>
+	  </div>
     </form>
-    <p>&nbsp;</p>
   </div>
   
   <script>
@@ -278,6 +298,12 @@ function myFunction() {
     header.classList.remove("sticky");
   }
 }
+
+function myFunction() 
+{
+  //window.print();
+}
+
 </script>
 
   <div class="footer">

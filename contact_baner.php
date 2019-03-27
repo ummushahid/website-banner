@@ -186,9 +186,7 @@ a:active {
       </table>
     </h3>
 </div>
-  <div class="footer">
-    <p>&nbsp;</p>
-  </div>
+  <div class="footer"></div>
   <!-- end .container --></div>
 </body>
 </html>
